@@ -1,7 +1,11 @@
-package service;
+package View;
 
 import Controllers.CourseController;
 import Controllers.StudentController;
+import Models.Student;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentView {
     StudentController controller = new StudentController();
@@ -29,7 +33,7 @@ public class StudentView {
             String gender = validation.getGender("Gender(M/F): ","Invalid,please re-enter !!!","^[mMfF]");
             int semester = validation.getInt("Enter Semester: ","Semester [1-9],please re-enter",1,9);
             courseController.displayListCourse();
-            String course = validation.getCourse("Enter Course: ","Course['Java','.Net','C++','C#']");
+            String course = validation.getCourse("Enter Course: "," course doesn't exist");
             controller.Create(id,name,dob,gender,semester,course);
             System.out.println("Add Successfully");
             count++;
@@ -38,13 +42,74 @@ public class StudentView {
     }
 
     public void Update() {
-
+        if(controller.checkListIsEmpty() == -1){
+            System.out.println("List Empty");
+            return;
+        }
+        controller.displayListStudent();
+        List<Student> studentListUpdate = new ArrayList<>();
+        int student_id = validation.getInt("Enter Student ID: ","Student ID does not exist ",1, controller.getListSize());
+        for (Student s: controller.getList()) {
+            if(s.getId() == student_id){
+                studentListUpdate.add(s);
+            }
+        }
+        controller.displayListStudentByIndex(studentListUpdate);
+        int index = validation.getInt("Choose index you want to update: ","Student does not exist ",1, studentListUpdate.size());
+        Student studentUpdate = controller.getStudentByIndex(index);
+        String oldName = studentUpdate.getName();
+        String newName = validation.getString("Enter name: ","Invalid,please re-enter !!!","^[A-Z a-z]*$");
+        if (newName.isEmpty()){
+            newName = studentUpdate.getName();
+        }
+        System.out.print("Enter Semester: ");
+        int newSemester = validation.getUpdateSemester();
+        if (newSemester == -1) {
+            newSemester = studentUpdate.getSemester();
+        }
+        courseController.displayListCourse();
+        String newCourse = validation.getCourse("Enter Course: "," course doesn't exist");
+        if (newCourse.isEmpty()) {
+            newCourse = studentUpdate.getCourse();
+        }
+        if (controller.isStudentExisted(student_id, newName, newSemester, newCourse) == true) {
+            System.out.println("Duplicates Information");
+            return;
+        } else if (checkUpdateStudentExisted(student_id, newSemester, newCourse) == false) {
+            for (Student st : studentListUpdate) {
+                if (st.getName().equals(oldName)) {
+                    st.setName(newName);
+                }
+            }
+            studentUpdate.setSemester(newSemester);
+            studentUpdate.setCourse(newCourse);
+        } else {
+            for (Student st : studentListUpdate) {
+                if (st.getName().equals(oldName)) {
+                    st.setName(newName);
+                }
+            }
+        }
+        controller.displayListStudentByIndex(studentListUpdate);
+        System.out.println("Update Successfully");
+        controller.UpdateOrDelete(index, studentUpdate);
     }
 
     public void Delete() {
+        if(controller.checkListIsEmpty() == -1){
+            System.out.println("List Empty");
+            return;
+        }
+        controller.displayListStudent();
+        int student_id = validation.getInt("Enter Student ID: ","Student ID does not exist ",1, controller.getListSize());
+        controller.Delete(student_id);
     }
 
     public void Search() {
+        if(controller.checkListIsEmpty() == -1){
+            System.out.println("List Empty");
+            return;
+        }
         while (true){
             System.out.println("1.Search By Id");
             System.out.println("2.Search By Name");
@@ -61,7 +126,7 @@ public class StudentView {
                     controller.searchStudentByName(student_name);
                     return;
                 case 3:
-                    String course = validation.getCourse("Enter Course: ","Course['Java','.Net','C++','C#']");
+                    String course = validation.getCourse("Enter Course: "," course doesn't exist");
                     controller.searchStudentByCourse(course);
                     return;
                 case 0:
@@ -69,6 +134,13 @@ public class StudentView {
             }
 
         }
-
+    }
+    public boolean checkUpdateStudentExisted(int id, int newSemester, String newCourse) {
+        for (Student st : controller.getList()) {
+            if (st.getId() == id && st.getSemester() == newSemester && st.getCourse().equals(newCourse)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

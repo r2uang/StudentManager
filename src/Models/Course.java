@@ -1,4 +1,4 @@
-package entities;
+package Models;
 
 public class Course {
     private int course_id;

@@ -1,7 +1,6 @@
-package service;
+package View;
 
 import Controllers.CourseController;
-import entities.Course;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,19 +57,15 @@ public class Validation {
         }
     }
 
-    public int getCourse(String msg, String err) {
+    public String getCourse(String msg, String err) {
         while (true){
             try{
                 System.out.print(msg);
-                int course_id = Integer.parseInt(sc.nextLine());
-                for (Course c : controller.getList()){
-                    if(course_id != c.getCourse_id()){
-                        System.out.println(err + course_id);
-                        break;
-                    }
-                    else{
-                        return course_id;
-                    }
+                String course = sc.nextLine().trim();
+                if(controller.checkCourseExist(course)){
+                    return course;
+                }else{
+                    System.out.println(course + err);
                 }
             }catch (Exception e){
                 System.out.println(err);
@@ -98,5 +93,23 @@ public class Validation {
                 System.out.println(err);
             }
         }
+    }
+
+    public int getUpdateSemester() {
+        int semester;
+        while (true) {
+            String input = sc.nextLine().trim();
+            if (input.isEmpty()) {
+                semester = -1;
+                break;
+            }
+            if (!input.matches("^[0-9]*$")) {
+                System.out.print("Please re-input: ");
+            } else {
+                semester = Integer.parseInt(input);
+                break;
+            }
+        }
+        return semester;
     }
 }

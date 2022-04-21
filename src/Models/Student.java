@@ -1,4 +1,6 @@
-package entities;
+package Models;
+
+import java.util.Date;
 
 public class Student {
     private int id;

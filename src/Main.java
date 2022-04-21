@@ -8,7 +8,7 @@ public class Main {
         StudentView studentView = new StudentView();
         while (true){
             Menu();
-            int choice = validation.getInt("Enter option: ","Option[0-4]",1,4);
+            int choice = validation.getInt("Enter option: ","Option[0-5]",0,5);
             switch (choice){
                 case 1:
                     studentView.List();

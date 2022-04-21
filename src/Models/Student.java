@@ -1,6 +1,4 @@
-package Models;
-
-import java.util.Date;
+package entities;
 
 public class Student {
     private int id;
@@ -68,5 +66,17 @@ public class Student {
 
     public void setCourse(String course) {
         this.course = course;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", dob='" + dob + '\'' +
+                ", gender='" + gender + '\'' +
+                ", semester=" + semester +
+                ", course='" + course + '\'' +
+                '}';
     }
 }

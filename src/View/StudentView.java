@@ -4,6 +4,7 @@ import Controllers.CourseController;
 import Controllers.StudentController;
 import Models.Student;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,10 @@ public class StudentView {
         }
         controller.displayListStudent();
         List<Student> studentListUpdate = new ArrayList<>();
-        int student_id = validation.getInt("Enter Student ID: ","Student ID does not exist ",1, controller.getListSize());
+        int student_id = validation.getInt("Enter Student ID: ","Student ID does not exist ",1, Integer.MAX_VALUE);
+        if (controller.checkIdExisted(student_id) == -1) {
+            System.out.println("Student not exist");
+        }
         for (Student s: controller.getList()) {
             if(s.getId() == student_id){
                 studentListUpdate.add(s);
@@ -56,9 +60,11 @@ public class StudentView {
         }
         controller.displayListStudentByIndex(studentListUpdate);
         int index = validation.getInt("Choose index you want to update: ","Student does not exist ",1, studentListUpdate.size());
-        Student studentUpdate = controller.getStudentByIndex(index);
+        int indexStudent = controller.findStudent(studentListUpdate.get(index - 1));
+        Student studentUpdate = controller.getStudentByIndex(indexStudent);
         String oldName = studentUpdate.getName();
-        String newName = validation.getString("Enter name: ","Invalid,please re-enter !!!","^[A-Z a-z]*$");
+        System.out.print("Enter Name: ");
+        String newName = validation.getUpdateName();
         if (newName.isEmpty()){
             newName = studentUpdate.getName();
         }
@@ -67,8 +73,10 @@ public class StudentView {
         if (newSemester == -1) {
             newSemester = studentUpdate.getSemester();
         }
+        System.out.println(newSemester);
         courseController.displayListCourse();
-        String newCourse = validation.getCourse("Enter Course: "," course doesn't exist");
+        System.out.print("Enter Course: ");
+        String newCourse = validation.getUpdateCourseName();
         if (newCourse.isEmpty()) {
             newCourse = studentUpdate.getCourse();
         }
@@ -90,9 +98,10 @@ public class StudentView {
                 }
             }
         }
+        controller.Update(indexStudent, studentUpdate);
         controller.displayListStudentByIndex(studentListUpdate);
         System.out.println("Update Successfully");
-        controller.UpdateOrDelete(index, studentUpdate);
+
     }
 
     public void Delete() {

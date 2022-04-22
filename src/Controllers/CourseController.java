@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.Course;
+import Models.Student;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class CourseController implements CRUD {
     }
 
     @Override
-    public int Update(int id) {
+    public int Update(int id, Student student) {
         return 0;
     }
 

@@ -1,9 +1,8 @@
 package Controllers;
 
-import Models.Course;
+
 import Models.Student;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +48,12 @@ public class StudentController implements CRUD {
     }
 
     @Override
-    public int Update(int id) {
-        return 0;
+    public int Update(int index, Student studentUpdate) {
+        if (index < 0) {
+            return -1;
+        }
+        list.set(index, studentUpdate);
+        return 1;
     }
 
     @Override
@@ -74,19 +77,21 @@ public class StudentController implements CRUD {
         }
         return 0;
     }
+
     public int checkListIsEmpty() {
         if (list.isEmpty()) {
             return -1;
         }
         return 1;
     }
+
     public void searchStudentID(int student_id) {
         for (int i = 0; i < list.size(); i++) {
             Student student = list.get(i);
             if (student.getId() == student_id) {
                 System.out.println(student.toString());
-            }else {
-                System.out.println("ID: "+ student_id +" Not exist!!");
+            } else {
+                System.out.println("ID: " + student_id + " Not exist!!");
             }
         }
     }
@@ -96,7 +101,7 @@ public class StudentController implements CRUD {
             Student student = list.get(i);
             if (student.getName().toLowerCase().contains(student_name.toLowerCase().trim())) {
                 System.out.println(student.toString());
-            }else{
+            } else {
                 System.out.println("Nothing Found !!!");
             }
         }
@@ -111,7 +116,7 @@ public class StudentController implements CRUD {
                 found = true;
             }
         }
-        if(!found){
+        if (!found) {
             System.out.println("Not Found");
         }
     }
@@ -119,8 +124,8 @@ public class StudentController implements CRUD {
     public void displayListStudentByIndex(List<Student> studentListUpdate) {
         System.out.println("----------------");
         int count = 1;
-        for (Student s: studentListUpdate) {
-            System.out.print(count);
+        for (Student s : studentListUpdate) {
+            System.out.print(count + "| ");
             System.out.println(s.toString());
             count++;
             System.out.println("");
@@ -147,12 +152,24 @@ public class StudentController implements CRUD {
         return false;
     }
 
-    public int UpdateOrDelete(int index, Student studentUpdate) {
-        if (index < 0) {
-            return -1;
+    public int findStudent(Student student) {
+        for (int i = 0; i < list.size(); i++) {
+            Student get = list.get(i);
+            if (get.equals(student)) {
+                return i;
+            }
         }
-        list.set(index, studentUpdate);
-        return 1;
+        return -1;
+    }
+
+    public int checkIdExisted(int student_id) {
+        for (int i = 0; i < list.size(); i++) {
+            Student s = list.get(i);
+            if (s.getId() == student_id) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
 
